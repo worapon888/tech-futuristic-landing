@@ -1,0 +1,58 @@
+.bg-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 2; /* อยู่บน content */
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen; /* ให้ glow โผล่บนดำ */
+  opacity: 0.35; /* คุมความแรง */
+}
+
+/* Glow */
+.bg-glow {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  top: -20%;
+  left: -20%;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(79, 196, 255, 0.18),
+    rgba(0, 0, 0, 0.08) 60%,
+    transparent 100%
+  );
+  filter: blur(90px);
+  animation: glowMove 12s ease-in-out infinite alternate;
+}
+
+/* Noise */
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  background: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.1; /* เพิ่มนิดให้เห็น texture */
+}
+
+/* Scanline */
+.bg-scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.1;
+}
+
+.bg-circuitboard {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+  opacity: 0.85; /* ปรับฟีลได้ */
+  filter: blur(0.1px);
+}
