@@ -1,22 +1,27 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { SplitText } from "gsap/SplitText"; // เปลี่ยน path ถ้าคุณวางไว้ที่อื่น
+import { SplitText } from "gsap/SplitText";
 
-export default function PreloaderOverlay({ onDone }) {
-  const root = useRef(null);
+type PreloaderOverlayProps = {
+  onDone?: () => void;
+};
+
+export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
+  const root = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(CustomEase, SplitText);
     CustomEase.create("hop", ".8, 0, .3, 1");
 
     const ctx = gsap.context(() => {
+      // ---------- Split helper ----------
       const splitTextElements = (
-        selector,
-        type = "words,chars",
-        addFirstChar = false
+        selector: string,
+        type: string = "words,chars",
+        addFirstChar: boolean = false
       ) => {
-        const elements = gsap.utils.toArray(selector);
+        const elements = gsap.utils.toArray<HTMLElement>(selector);
         elements.forEach((el) => {
           const split = new SplitText(el, {
             type,
@@ -27,20 +32,39 @@ export default function PreloaderOverlay({ onDone }) {
           if (type.includes("chars")) {
             split.chars.forEach((char, i) => {
               const t = char.textContent;
-              char.innerHTML = `<span>${t}</span>`;
-              if (addFirstChar && i === 0) char.classList.add("first-char");
+              // ใช้ wrapper char-inner เพื่อกันเส้นปริ
+              char.innerHTML = `<span class="char-inner">${t}</span>`;
+              if (addFirstChar && i === 0) {
+                char.classList.add("first-char");
+              }
             });
           }
         });
       };
 
-      splitTextElements(".intro-title h1", "words, chars", true);
-      splitTextElements(".outro-title h1");
+      // ---------- Split ----------
+      splitTextElements(".intro-title h1", "words,chars", true);
+      // เลข 10: เอาเฉพาะ chars พอ ไม่ต้อง words
+      splitTextElements(".outro-title h1", "chars");
       splitTextElements(".tag p", "words");
-      splitTextElements(".card h1", "words, chars", true);
+      splitTextElements(".card h1", "words,chars", true);
 
       const isMobile = window.innerWidth <= 1000;
 
+      // ---------- Fix visual seam ของเลข 10 ----------
+      // ทำให้แต่ละ char เป็นกล่องครอบ (overflow hidden) + inner เป็น block
+      gsap.set(".outro-title .char", {
+        display: "inline-block",
+        overflow: "hidden",
+        lineHeight: 1,
+        height: "1em",
+      });
+      gsap.set(".outro-title .char-inner", {
+        display: "block",
+        willChange: "transform",
+      });
+
+      // ---------- ค่าเริ่มต้น ----------
       gsap.set(
         [
           ".split-overlay .intro-title .first-char span",
@@ -52,19 +76,19 @@ export default function PreloaderOverlay({ onDone }) {
       gsap.set(".split-overlay .intro-title .first-char", {
         x: isMobile ? "7.5rem" : "18rem",
         y: isMobile ? "-1rem" : "-2.75rem",
-        fontWeight: "900",
+        fontWeight: 900,
         scale: 0.75,
       });
 
       gsap.set(".split-overlay .outro-title .char", {
         x: isMobile ? "-3rem" : "-8rem",
         fontSize: isMobile ? "6rem" : "14rem",
-        fontWeight: "500",
       });
 
       const tl = gsap.timeline({ defaults: { ease: "hop" } });
-      const tags = gsap.utils.toArray(".tag");
+      const tags = gsap.utils.toArray<HTMLElement>(".tag");
 
+      // ---------- tags ขึ้น ----------
       tags.forEach((tag, index) => {
         tl.to(
           tag.querySelectorAll("p .word"),
@@ -73,6 +97,7 @@ export default function PreloaderOverlay({ onDone }) {
         );
       });
 
+      // ---------- Nullspace ขึ้น / ลง เหลือ N ----------
       tl.to(
         ".preloader .intro-title .char span",
         { y: "0%", duration: 0.75, stagger: 0.05 },
@@ -83,40 +108,45 @@ export default function PreloaderOverlay({ onDone }) {
           { y: "100%", duration: 0.75, stagger: 0.05 },
           2
         )
+        // ---------- เลข 10 โผล่ (ใช้ .char-inner / span เดิม) ----------
         .to(
           ".preloader .outro-title .char span",
           { y: "0%", duration: 0.75, stagger: 0.075 },
           2.5
         )
+        // ขยับ N ไปเป็น superscript
         .to(
           ".preloader .intro-title .first-char",
           { x: isMobile ? "9rem" : "21.25rem", duration: 1 },
           3.5
         )
+        // ขยับเลข 10 เข้า position
         .to(
           ".preloader .outro-title .char",
           { x: isMobile ? "-3rem" : "-8rem", duration: 1 },
           3.5
         )
+        // รีเซ็ต N กลับค่าที่ต้องการ
         .to(
           ".preloader .intro-title .first-char",
           {
             x: isMobile ? "7.5rem" : "18rem",
             y: isMobile ? "-1rem" : "-2.75rem",
-            fontWeight: "900",
+            fontWeight: 900,
             scale: 0.75,
             duration: 0.75,
           },
           4.5
         )
+        // sync เลข 10 ฝั่ง split-overlay แล้วหั่นจอ
         .to(
           ".preloader .outro-title .char",
           {
             x: isMobile ? "-3rem" : "-8rem",
             fontSize: isMobile ? "6rem" : "14rem",
-            fontWeight: "500",
             duration: 0.75,
             onComplete: () => {
+              // หั่นจอเป็นบน/ล่าง
               gsap.set(".preloader", {
                 clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
               });
@@ -127,6 +157,7 @@ export default function PreloaderOverlay({ onDone }) {
           },
           4.5
         )
+        // เตรียมเปิดฉาก site-container
         .to(
           ".site-container",
           {
@@ -136,6 +167,7 @@ export default function PreloaderOverlay({ onDone }) {
           5
         );
 
+      // ---------- tags ลง ----------
       tags.forEach((tag, index) => {
         tl.to(
           tag.querySelectorAll("p .word"),
@@ -144,6 +176,7 @@ export default function PreloaderOverlay({ onDone }) {
         );
       });
 
+      // ---------- slide preloader ออก / เปิด site จริง ----------
       tl.to(
         [".preloader", ".split-overlay"],
         { y: (i) => (i === 0 ? "-50%" : "50%"), duration: 1 },
@@ -180,19 +213,19 @@ export default function PreloaderOverlay({ onDone }) {
     <div ref={root}>
       <div className="preloader">
         <div className="intro-title">
-          <h1>Nullspace Studio</h1>
+          <h1>FUTURISTIC TECH</h1>
         </div>
         <div className="outro-title">
-          <h1>10</h1>
+          <h1>DEV</h1>
         </div>
       </div>
 
       <div className="split-overlay">
         <div className="intro-title">
-          <h1>Nullspace Studio</h1>
+          <h1>FUTURISTIC TECH</h1>
         </div>
         <div className="outro-title">
-          <h1>10</h1>
+          <h1>DEV</h1>
         </div>
       </div>
 
@@ -201,10 +234,10 @@ export default function PreloaderOverlay({ onDone }) {
           <p>Negative Space</p>
         </div>
         <div className="tag tag-2">
-          <p>Form & Void</p>
+          <p>Form &amp; Void</p>
         </div>
         <div className="tag tag-3">
-          <p>Light Studies</p>
+          <p>Worapon.dev&copy; 2025</p>
         </div>
       </div>
     </div>
