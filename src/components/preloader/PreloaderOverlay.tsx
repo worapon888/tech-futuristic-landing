@@ -1,15 +1,10 @@
 import { useLayoutEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { SplitText } from "gsap/SplitText";
+import { SplitText } from "gsap/SplitText"; // เปลี่ยน path ถ้าคุณวางไว้ที่อื่น
 
-type PreloaderOverlayProps = {
-  onDone?: () => void;
-};
-
-export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
-  const root = useRef<HTMLDivElement | null>(null);
+export default function PreloaderOverlay({ onDone }) {
+  const root = useRef(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(CustomEase, SplitText);
@@ -17,11 +12,11 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
 
     const ctx = gsap.context(() => {
       const splitTextElements = (
-        selector: string,
-        type: string = "words,chars",
-        addFirstChar: boolean = false
+        selector,
+        type = "words,chars",
+        addFirstChar = false
       ) => {
-        const elements = gsap.utils.toArray<HTMLElement>(selector);
+        const elements = gsap.utils.toArray(selector);
         elements.forEach((el) => {
           const split = new SplitText(el, {
             type,
@@ -30,8 +25,8 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
           });
 
           if (type.includes("chars")) {
-            split.chars.forEach((char: HTMLElement, i: number) => {
-              const t = char.textContent ?? "";
+            split.chars.forEach((char, i) => {
+              const t = char.textContent;
               char.innerHTML = `<span>${t}</span>`;
               if (addFirstChar && i === 0) char.classList.add("first-char");
             });
@@ -68,7 +63,7 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
       });
 
       const tl = gsap.timeline({ defaults: { ease: "hop" } });
-      const tags = gsap.utils.toArray<HTMLElement>(".tag");
+      const tags = gsap.utils.toArray(".tag");
 
       tags.forEach((tag, index) => {
         tl.to(
@@ -151,10 +146,7 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
 
       tl.to(
         [".preloader", ".split-overlay"],
-        {
-          y: (i) => (i === 0 ? "-50%" : "50%"),
-          duration: 1,
-        },
+        { y: (i) => (i === 0 ? "-50%" : "50%"), duration: 1 },
         6
       )
         .to(
@@ -184,7 +176,7 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
     return () => ctx.revert();
   }, [onDone]);
 
-  const overlay = (
+  return (
     <div ref={root}>
       <div className="preloader">
         <div className="intro-title">
@@ -217,7 +209,4 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
       </div>
     </div>
   );
-
-  // ✅ Portal ออกไปที่ body เพื่อให้ fixed เต็มจอชัวร์
-  return createPortal(overlay, document.body);
 }
