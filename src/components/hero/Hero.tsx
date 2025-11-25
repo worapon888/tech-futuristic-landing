@@ -18,17 +18,17 @@ export default function Hero() {
       const introTl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       introTl
-        .from(".hero-kicker", { y: 12, opacity: 0, duration: 0.7 }, 0.2)
+        .from(".hero-kicker", { y: -15, opacity: 0, duration: 0.7 }, 6.7)
         .from(
           ".hero-title",
           { y: 24, opacity: 0, filter: "blur(8px)", duration: 1 },
-          0.35
+          6.6
         )
-        .from(".hero-sub", { y: 12, opacity: 0, duration: 0.8 }, 0.75)
+        .from(".hero-sub", { y: 12, opacity: 0, duration: 1 }, 6.8)
         .from(
           ".hero-cta",
           { y: 8, opacity: 0, stagger: 0.08, duration: 0.6 },
-          0.95
+          6.6
         );
 
       /* ===== BLOCK REVEAL MENU ===== */
@@ -149,8 +149,12 @@ export default function Hero() {
         </p>
 
         <h1
-          className="hero-title"
-          style={{ fontSize: "clamp(36px, 6vw, 80px)", margin: "10px 0" }}
+          className="hero-title glitch-text"
+          data-text="Launch the Next-Gen Experience"
+          style={{
+            fontSize: "clamp(36px, 6vw, 80px)",
+            margin: "10px 0",
+          }}
         >
           Launch the Next-Gen Experience
         </h1>
@@ -159,19 +163,9 @@ export default function Hero() {
           Cinematic motion. Precise interaction. Dark-tech premium tone.
         </p>
 
-        <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
-          <button
-            className="hero-cta"
-            style={{ padding: "12px 18px", borderRadius: 999 }}
-          >
-            Get Started
-          </button>
-          <button
-            className="hero-cta"
-            style={{ padding: "12px 18px", borderRadius: 999 }}
-          >
-            Watch Demo
-          </button>
+        <div className="hero-cta-group">
+          <button className="hero-cta">Get Started</button>
+          <button className="hero-cta">Watch Demo</button>
         </div>
       </div>
 

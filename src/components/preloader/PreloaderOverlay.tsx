@@ -76,7 +76,7 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
       gsap.set(".split-overlay .intro-title .first-char", {
         x: isMobile ? "7.5rem" : "18rem",
         y: isMobile ? "-1rem" : "-2.75rem",
-        fontWeight: 900,
+
         scale: 0.75,
       });
 
@@ -117,7 +117,7 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
         // ขยับ N ไปเป็น superscript
         .to(
           ".preloader .intro-title .first-char",
-          { x: isMobile ? "9rem" : "21.25rem", duration: 1 },
+          { x: isMobile ? "20rem" : "30rem", duration: 1 },
           3.5
         )
         // ขยับเลข 10 เข้า position
@@ -130,9 +130,9 @@ export default function PreloaderOverlay({ onDone }: PreloaderOverlayProps) {
         .to(
           ".preloader .intro-title .first-char",
           {
-            x: isMobile ? "7.5rem" : "18rem",
+            x: isMobile ? "9rem" : "15rem",
             y: isMobile ? "-1rem" : "-2.75rem",
-            fontWeight: 900,
+
             scale: 0.75,
             duration: 0.75,
           },
