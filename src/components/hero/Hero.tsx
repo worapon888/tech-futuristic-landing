@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "../../utils/gsap";
 import BioVeinScene from "../background/BioVeinScene";
 import logo from "../../assets/logo.png";
+import { bioVeinMouse } from "../../utils/bioVeinMouse";
 
 export default function Hero() {
   const root = useRef<HTMLDivElement | null>(null);
@@ -9,6 +10,37 @@ export default function Hero() {
   // timeline ของเมนู (block reveal)
   const menuTl = useRef<gsap.core.Timeline | null>(null);
   const isOpen = useRef(false);
+
+  // --- ใส่ useEffect สำหรับ mouse ตรงนี้ ---
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+
+    const handleMove = (e: PointerEvent) => {
+      const rect = el.getBoundingClientRect();
+
+      // แปลงเป็น 0..1 ภายใน hero section
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      bioVeinMouse.x = x;
+      bioVeinMouse.y = 1 - y; // UV แกน Y กลับด้าน
+    };
+
+    const handleLeave = () => {
+      // เมาส์ออกนอก hero → ค่อย ๆ กลับไปกลางจอ
+      bioVeinMouse.x = 0.5;
+      bioVeinMouse.y = 0.5;
+    };
+
+    el.addEventListener("pointermove", handleMove);
+    el.addEventListener("pointerleave", handleLeave);
+
+    return () => {
+      el.removeEventListener("pointermove", handleMove);
+      el.removeEventListener("pointerleave", handleLeave);
+    };
+  }, []);
 
   useEffect(() => {
     if (!root.current) return;
@@ -113,7 +145,7 @@ export default function Hero() {
         />
       </nav>
 
-      {/* ===== BLOCK OVERLAY (เพิ่มเข้ามาใหม่) ===== */}
+      {/* ===== BLOCK OVERLAY ===== */}
       <div className="overlay" aria-hidden="true">
         {Array.from({ length: 8 }).map((_, i) => (
           <div className="block" key={i} />
@@ -133,33 +165,30 @@ export default function Hero() {
         <BioVeinScene />
       </div>
 
-      {/* ===== Content Layer (ของเดิมคุณทั้งหมด) ===== */}
+      {/* ===== VIGNETTE / FOCUS OVERLAY ===== */}
+      <div className="hero-vignette" aria-hidden="true" />
+
+      {/* ===== Content Layer ===== */}
       <div
+        className="hero-content"
         style={{
-          maxWidth: 900,
+          maxWidth: 1100,
           position: "relative",
           zIndex: 2,
+          textAlign: "right",
+          marginLeft: "auto", // ชิดขวา
+          paddingRight: "4vw",
+          marginTop: "10vh", // ดันลงมาจากขอบบน
         }}
       >
-        <p
-          className="hero-kicker"
-          style={{ opacity: 0.6, letterSpacing: "0.2em" }}
-        >
-          FUTURISTIC TECH
-        </p>
+        <p className="hero-kicker">FUTURISTIC TECH</p>
 
-        <h1
-          className="hero-title glitch-text"
-          data-text="Launch the Next-Gen Experience"
-          style={{
-            fontSize: "clamp(36px, 6vw, 80px)",
-            margin: "10px 0",
-          }}
-        >
-          Launch the Next-Gen Experience
+        <h1 className="hero-title" data-text="Launch the Next-Gen Experience">
+          {/* ใช้ non-breaking hyphen กันคำแตกบรรทัด */}
+          {"Launch the Next\u2011Gen Experience"}
         </h1>
 
-        <p className="hero-sub" style={{ opacity: 0.8, maxWidth: 600 }}>
+        <p className="hero-sub">
           Cinematic motion. Precise interaction. Dark-tech premium tone.
         </p>
 
@@ -169,8 +198,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ===== Overlay Menu (ของเดิม แต่ animate ด้วย GSAP) ===== */}
-
+      {/* ===== Overlay Menu ===== */}
       <div className="overlay-menu">
         <div className="menu-title">
           <p>[menu]</p>

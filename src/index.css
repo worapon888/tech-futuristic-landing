@@ -38,148 +38,132 @@ a {
 .hero-kicker {
   font-family: "Satoshi";
   font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.35em;
+  font-size: 14px;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
-  opacity: 0.75;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.45;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-
-.hero-title {
-  font-family: "ClashDisplay";
-  font-weight: 600;
-  font-size: clamp(48px, 7vw, 120px);
-  letter-spacing: -0.015em;
-  line-height: 0.9;
-  color: #f3f4f6;
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
 }
 
 .hero-sub {
-  font-family: "Satoshi";
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   opacity: 0.75;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-.glitch-text {
-  position: relative;
-  display: inline-block;
-  user-select: none;
+  color: rgba(214, 224, 238, 0.85);
+  margin-top: 32px; /* ช่องไฟหายใจจาก H1 */
+  margin-left: auto;
 }
 
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
+/* วงแหวนมืดรอบ ๆ ให้โฟกัสที่ hero */
+.hero-vignette {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  inset: 0;
   pointer-events: none;
-  overflow: hidden;
+  z-index: 1;
+
+  background:
+
+    /* 🔵 Soft glow ใต้ H1 แบบเนียนเป็นหมอก */ radial-gradient(
+      circle at 50% 55%,
+      rgba(0, 140, 255, 0.22) 0%,
+      rgba(0, 100, 220, 0.12) 10%,
+      rgba(0, 60, 160, 0.05) 20%,
+      transparent 60%
+    ),
+    /* 🟦 Inner dark vignette ให้ฉากลึกขึ้น */
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 45%,
+        rgba(0, 0, 0, 0.55) 85%
+      ),
+    /* ⚫ Outer vignette เข้มสุดขอบ */
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.85) 100%
+      );
+}
+.hero-title {
+  position: relative;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 0.24em; /* ลดจาก 0.4em ให้แน่นขึ้น */
+  text-transform: uppercase;
+  font-size: clamp(52px, 8.4vw, 132px);
+
+  color: #eafbff;
 }
 
-/* RGB layers */
-.glitch-text::before {
-  text-shadow: -2px 0 #ff004c;
-  opacity: 0.75;
-  animation: glitchTop 2.5s infinite linear alternate-reverse;
-}
-
-.glitch-text::after {
-  text-shadow: 2px 0 #00f2ff;
-  opacity: 0.75;
-  animation: glitchBottom 2s infinite linear alternate-reverse;
-}
-
-@keyframes glitchTop {
-  0% {
-    clip-path: inset(0 0 75% 0);
-    transform: translate(0);
-  }
-  20% {
-    clip-path: inset(10% 0 50% 0);
-    transform: translate(-2px, -1px);
-  }
-  40% {
-    clip-path: inset(30% 0 40% 0);
-    transform: translate(2px, 1px);
-  }
-  60% {
-    clip-path: inset(5% 0 60% 0);
-    transform: translate(-1px, 0);
-  }
-  100% {
-    clip-path: inset(0 0 70% 0);
-    transform: translate(1px, -1px);
-  }
-}
-
-@keyframes glitchBottom {
-  0% {
-    clip-path: inset(70% 0 0 0);
-    transform: translate(0);
-  }
-  20% {
-    clip-path: inset(50% 0 10% 0);
-    transform: translate(1px, 2px);
-  }
-  40% {
-    clip-path: inset(40% 0 30% 0);
-    transform: translate(-1px, -2px);
-  }
-  60% {
-    clip-path: inset(60% 0 5% 0);
-    transform: translate(2px, 0);
-  }
-  100% {
-    clip-path: inset(65% 0 0 0);
-    transform: translate(-1px, 1px);
-  }
+.hero-content::before {
+  content: "";
+  position: absolute;
+  inset: -50px 0 0 0;
+  margin: auto;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 120, 255, 0.25) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  z-index: -1;
+  filter: blur(60px);
+  opacity: 0.1;
 }
 
 .hero-cta-group {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 28px; /* เลื่อนลงนิดให้ไม่ติด hero-sub */
 }
 
 .hero-cta {
+  position: relative;
+
   font-family: "Satoshi", sans-serif;
   font-weight: 500;
-  font-size: 15px;
-  letter-spacing: 0.02em;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 
-  padding: 12px 26px;
+  padding: 12px 30px;
   border-radius: 999px;
 
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px);
+  color: #cfeaff;
+  background: rgba(0, 20, 40, 0.45); /* ★ ฟีลน้ำเงินเข้มลึก ๆ */
+  border: 1px solid rgba(0, 150, 255, 0.35); /* ★ ขอบสี cyan neon */
+  backdrop-filter: blur(14px);
 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.18),
+    /* outer soft glow */ inset 0 0 12px rgba(0, 150, 255, 0.08); /* inner glow */
+
   cursor: pointer;
-
-  transition: background 0.25s ease-out, border-color 0.25s ease-out,
-    box-shadow 0.25s ease-out, color 0.25s ease-out;
+  /* transition: 0.3s ease-out; */
 }
 
-/* Hover ─ ความรู้สึกเทค + ฟีล hologram */
+/* HOVER — เรืองแสงขึ้นแบบคุมได้ */
 .hero-cta:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  border-color: rgba(0, 180, 255, 0.8);
+
+  box-shadow: 0 0 14px rgba(0, 180, 255, 0.45),
+    inset 0 0 14px rgba(0, 130, 255, 0.25);
+
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Active ─ มีน้ำหนัก cinematic */
+/* ACTIVE — กดกินลง */
 .hero-cta:active {
   transform: translateY(0);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 40, 70, 0.55);
+  border-color: rgba(0, 160, 255, 0.55);
+
+  box-shadow: 0 0 6px rgba(0, 150, 255, 0.28),
+    inset 0 0 8px rgba(0, 120, 220, 0.35);
 }
 
 /* =====================================================

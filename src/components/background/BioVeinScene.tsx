@@ -9,9 +9,17 @@ function BioVeinPlane() {
   const meshRef = useRef<THREE.Mesh>(null);
 
   // บังคับ scale ให้เต็มกล้องทุกเฟรม (กัน viewport/ortho เพี้ยน)
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (!meshRef.current) return;
+
+    const t = clock.elapsedTime;
+
+    // scale ให้เต็มจอเหมือนเดิม
     meshRef.current.scale.set(viewport.width, viewport.height, 1);
+
+    // เพิ่ม drift ช้า ๆ เหมือนกล้องลอย
+    meshRef.current.position.x = Math.sin(t * 0.08) * 0.15;
+    meshRef.current.position.y = Math.cos(t * 0.06) * 0.12;
   });
 
   return (

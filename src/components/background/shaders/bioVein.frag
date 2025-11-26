@@ -4,6 +4,8 @@ uniform float uTime;
 uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform vec3 uColor3;
+uniform vec2 uMouse;
+uniform float uDistortionStrength;
 
 varying vec2 vUv;
 
@@ -104,8 +106,22 @@ float fbm(vec3 p) {
 }
 
 void main() {
-  vec3 p = vec3(vUv * 3.0, uTime * 0.05);
+  vec2 uv = vUv;
 
+  // ----- cursor distortion -----
+  vec2 m = uMouse;
+
+  float d = distance(uv, m);
+  float wave = sin(40.0 * d - uTime * 5.0);
+  float falloff = 1.0 / (d * 40.0 + 1.0);
+  float ripple = wave * falloff * uDistortionStrength;
+
+  // กันกรณี d = 0 ไม่ให้ normalize(0)
+  vec2 dir = d > 0.0001 ? normalize(uv - m) : vec2(0.0);
+  uv += dir * ripple;
+
+  // ----- จากนี้ใช้ uv ใหม่แทน vUv เดิม -----
+  vec3 p = vec3(uv * 3.0, uTime * 0.05);   // ✅ ใช้ uv
   vec3 q = vec3(
     fbm(p + vec3(0.0)),
     fbm(p + vec3(5.2, 1.3, 2.8)),
@@ -118,16 +134,15 @@ void main() {
     0.0
   );
 
-float f = fbm(p + 4.0*r);
+  float f = fbm(p + 4.0*r);
 
-// ✅ ดัน contrast + brightness ให้เห็นชัด
-f = pow(f, 2.2);
-f = smoothstep(0.08, 1.0, f);
-f *= 1.35;
+  // ✅ ดัน contrast + brightness ให้เห็นชัด
+  f = pow(f, 2.2);
+  f = smoothstep(0.08, 1.0, f);
+  f *= 1.35;
 
-vec3 color = mix(uColor1, uColor2, f);
-color = mix(color, uColor3, smoothstep(0.65, 1.0, f));
+  vec3 color = mix(uColor1, uColor2, f);
+  color = mix(color, uColor3, smoothstep(0.65, 1.0, f));
 
-gl_FragColor = vec4(color, 1.0);
-
+  gl_FragColor = vec4(color, 1.0);
 }
