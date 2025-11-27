@@ -1,0 +1,140 @@
+/* =========================
+   Base
+========================= */
+
+.usecases {
+  position: relative;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* =========================
+   Hero (ของเดิม)
+========================= */
+.hero {
+  height: 100vh;
+}
+
+.hero .img {
+  width: 50%;
+  aspect-ratio: 1;
+}
+
+/* =========================
+   Footer
+========================= */
+.footer {
+  height: 50vh;
+  align-items: flex-start;
+}
+
+.footer a {
+  font-size: 4vw;
+  color: #fff;
+}
+
+/* =========================
+   UseCases Parallax
+========================= */
+
+.usecases {
+  width: 100vw;
+  height: 150vh; /* ให้สูงหน่อยเพื่อมีพื้นที่เล่นพารัลแลกซ์ */
+  flex-direction: column;
+}
+
+.use-row {
+  position: relative;
+  width: 100%;
+  margin: 1em 0;
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+}
+
+.use-card {
+  position: relative;
+  width: 40%;
+  height: 360px;
+  border-radius: 0.75em;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.use-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* content กลางจอ */
+.use-main-content {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.use-logo {
+  width: 150px;
+  height: 150px;
+  border: 2px solid #fff;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.use-copy {
+  margin: 2em 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.use-line {
+  position: relative;
+  margin: 0.5em 0;
+  width: max-content;
+  height: 28px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.use-line p {
+  position: relative;
+  font-size: 24px;
+}
+
+/* CTA Button */
+.use-btn .use-cta-btn {
+  position: relative;
+  padding: 1em 2em;
+  font-size: 18px;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 8em;
+  background: none;
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .use-card {
+    width: 50%;
+    height: 240px;
+  }
+
+  .use-line p {
+    font-size: 18px;
+  }
+
+  .use-btn .use-cta-btn {
+    font-size: 16px;
+    padding: 0.8em 1.8em;
+  }
+}

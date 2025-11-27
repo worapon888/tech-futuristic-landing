@@ -112,7 +112,7 @@ void main() {
   vec2 m = uMouse;
 
   float d = distance(uv, m);
-  float wave = sin(40.0 * d - uTime * 5.0);
+  float wave = sin(20.0 * d - uTime * 5.0);
   float falloff = 1.0 / (d * 40.0 + 1.0);
   float ripple = wave * falloff * uDistortionStrength;
 

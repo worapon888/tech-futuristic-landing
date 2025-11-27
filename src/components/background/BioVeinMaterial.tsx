@@ -17,7 +17,7 @@ const BioVeinMaterialImpl = shaderMaterial(
     uColor1: new THREE.Color("#040B12"),
     uColor2: new THREE.Color("#0E3558"),
     uColor3: new THREE.Color("#47B5F2"),
-    uMouse: new THREE.Vector2(0.5, 0.5), // 👈 เพิ่ม
+    uMouse: new THREE.Vector2(0.1, 0.1), // 👈 เพิ่ม
     uDistortionStrength: 0.035, // 👈 optional: ความแรง distortion
   },
   vertexShader,

@@ -20,7 +20,11 @@ body::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
-
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 h1 {
   font-family: "ClashDisplay", sans-serif;
   font-weight: normal;
@@ -518,4 +522,17 @@ a {
   .outro-title .char {
     margin-top: 0.5rem;
   }
+}
+
+.cta-item {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.1em; /* ลดจาก 0.4em ให้แน่นขึ้น */
+}
+.cta-title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.1em; /* ลดจาก 0.4em ให้แน่นขึ้น */
 }
