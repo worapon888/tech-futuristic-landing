@@ -1,10 +1,6 @@
 /* src/styles/work.css */
 
 /* ถ้าไม่อยากให้ทั้งเว็บพื้นหลังแดง ลองย้ายไปเฉพาะ .intro/.outro แทน */
-body {
-  background-color: #0c1bf4;
-  overflow-x: hidden;
-}
 
 section {
   position: relative;
@@ -14,7 +10,7 @@ section {
 }
 
 .work {
-  background-color: #000;
+  position: relative;
   overflow: hidden;
 }
 
@@ -96,4 +92,34 @@ canvas {
   color: #00d8ff;
   text-shadow: 0 0 12px rgba(0, 216, 255, 0.5), 0 0 24px rgba(0, 216, 255, 0.3);
   -webkit-text-stroke: 2px rgba(0, 0, 0, 0.6);
+}
+
+/* วงแหวนมืดรอบ ๆ ให้โฟกัสที่ hero */
+.hero-vignette1 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+
+  background:
+
+    /* 🔵 Soft glow ใต้ H1 แบบเนียนเป็นหมอก */ radial-gradient(
+      circle at 50% 55%,
+      rgba(0, 140, 255, 0.22) 0%,
+      rgba(0, 100, 220, 0.12) 10%,
+      rgba(0, 60, 160, 0.05) 20%,
+      transparent 60%
+    ),
+    /* 🟦 Inner dark vignette ให้ฉากลึกขึ้น */
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 45%,
+        rgba(0, 0, 0, 0.55) 85%
+      ),
+    /* ⚫ Outer vignette เข้มสุดขอบ */
+      radial-gradient(
+        circle at 50% 50%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.85) 100%
+      );
 }

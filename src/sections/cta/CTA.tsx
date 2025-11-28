@@ -11,7 +11,8 @@ export default function CTA() {
 
     const ctx = gsap.context(() => {
       const title = el.querySelector(".cta-title");
-      const items = el.querySelectorAll(".cta-item");
+      const text = el.querySelector(".cta-item");
+      const button = el.querySelector(".cta-button");
 
       if (!title) return;
 
@@ -42,18 +43,39 @@ export default function CTA() {
         stagger: 0.03,
       });
 
-      // cta-item ขึ้นเร็ว + ซ้อนกับท้าย ๆ ของ title
-      tl.from(
-        items,
-        {
-          y: 16,
-          opacity: 0,
-          duration: 0.36, // เร็วสุดแบบยังเนียน
-          ease: "power3.out",
-          stagger: 0.03,
-        },
-        "-=0.6" // เริ่มเร็วกว่าของเดิม (ซ้อนท้าย title เลย)
-      );
+      /* ---------------------------------
+         cta-item ขึ้นก่อน
+      ----------------------------------*/
+      if (text) {
+        tl.from(
+          text,
+          {
+            y: 16,
+            opacity: 0,
+            duration: 0.38,
+            ease: "power3.out",
+          },
+          "-=0.45"
+        );
+      }
+
+      /* ---------------------------------
+         cta-button ขึ้นตามแบบเร็ว + หน่วงนิด ๆ
+      ----------------------------------*/
+      if (button) {
+        tl.from(
+          button,
+          {
+            y: 22,
+            opacity: 0,
+            duration: 0.42,
+            ease: "power3.out",
+            // ให้มัน “หน่วงแล้วดีดขึ้นเร็ว”
+            delay: 0.08,
+          },
+          "-=0.25" // ยังซ้อนนิด ๆ กับ cta-item
+        );
+      }
     }, el);
 
     return () => ctx.revert();
@@ -63,7 +85,6 @@ export default function CTA() {
     <section
       ref={root}
       style={{
-        minHeight: "70vh",
         padding: "12vh 8vw",
         display: "grid",
         placeItems: "center",
@@ -71,12 +92,12 @@ export default function CTA() {
         color: "white",
       }}
     >
-      <div>
+      <div className="cta-container">
         <h2
           className="cta-title"
           style={{
             fontSize: "clamp(28px, 4vw, 96px)",
-            display: "inline-block", // ให้ mask ของ SplitText ทำงานสวย ๆ
+            display: "inline-block",
           }}
         >
           Build the Experience of Tomorrow
@@ -87,7 +108,7 @@ export default function CTA() {
         </p>
 
         <button
-          className="cta-item"
+          className="cta-button"
           style={{
             marginTop: 24,
             padding: "14px 26px",

@@ -11,45 +11,33 @@
   overflow-x: hidden;
 }
 
-/* =========================
-   Hero (ของเดิม)
-========================= */
-.hero {
-  height: 100vh;
+/* Tablet / iPad */
+@media (max-width: 1024px) {
+  .usecases {
+    height: 75vh;
+  }
 }
 
-.hero .img {
-  width: 50%;
-  aspect-ratio: 1;
+/* Mobile */
+@media (max-width: 768px) {
+  .usecases {
+    height: 75vh;
+  }
 }
-
-/* =========================
-   Footer
-========================= */
-.footer {
-  height: 50vh;
-  align-items: flex-start;
-}
-
-.footer a {
-  font-size: 4vw;
-  color: #fff;
-}
-
 /* =========================
    UseCases Parallax
 ========================= */
 
 .usecases {
   width: 100vw;
-  height: 150vh; /* ให้สูงหน่อยเพื่อมีพื้นที่เล่นพารัลแลกซ์ */
+  height: 100vh; /* ให้สูงหน่อยเพื่อมีพื้นที่เล่นพารัลแลกซ์ */
   flex-direction: column;
 }
 
 .use-row {
   position: relative;
   width: 100%;
-  margin: 1em 0;
+
   display: flex;
   justify-content: center;
   gap: 2em;

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { gsap } from "../../utils/gsap";
+import { gsap, SplitText } from "../../utils/gsap";
 import BioVeinScene from "../../components/background/BioVeinScene";
 import logo from "../../assets/logo.png";
 import { bioVeinMouse } from "../../utils/bioVeinMouse";
@@ -11,7 +11,7 @@ export default function Hero() {
   const menuTl = useRef<gsap.core.Timeline | null>(null);
   const isOpen = useRef(false);
 
-  // --- ใส่ useEffect สำหรับ mouse ตรงนี้ ---
+  // --- mouse position → shader ---
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -19,7 +19,6 @@ export default function Hero() {
     const handleMove = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect();
 
-      // แปลงเป็น 0..1 ภายใน hero section
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
 
@@ -28,7 +27,6 @@ export default function Hero() {
     };
 
     const handleLeave = () => {
-      // เมาส์ออกนอก hero → ค่อย ๆ กลับไปกลางจอ
       bioVeinMouse.x = 0.5;
       bioVeinMouse.y = 0.5;
     };
@@ -46,22 +44,64 @@ export default function Hero() {
     if (!root.current) return;
 
     const ctx = gsap.context(() => {
+      const titleEl = root.current?.querySelector(
+        ".hero-title"
+      ) as HTMLElement | null;
+
+      // เตรียม SplitText สำหรับ hero-title แบบเดียวกับ CTA
+      let split: SplitText | null = null;
+
+      if (titleEl) {
+        split = new SplitText(titleEl, {
+          type: "chars",
+          mask: "chars",
+        });
+
+        // เริ่มจากอยู่ล่าง + โปร่งใส
+        gsap.set(split.chars, { y: "120%", opacity: 0 });
+      }
+
       /* ===== HERO INTRO ===== */
       const introTl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      introTl
-        .from(".hero-kicker", { y: -15, opacity: 0, duration: 0.7 }, 6.7)
-        .from(
-          ".hero-title",
-          { y: 24, opacity: 0, filter: "blur(8px)", duration: 1 },
-          6.6
-        )
-        .from(".hero-sub", { y: 12, opacity: 0, duration: 1 }, 6.8)
-        .from(
-          ".hero-cta",
-          { y: 8, opacity: 0, stagger: 0.08, duration: 0.6 },
-          6.6
-        );
+      // 1) kicker เข้ามาก่อนนิดหน่อย
+      introTl.from(".hero-kicker", { y: -15, opacity: 0, duration: 0.7 }, 6.5);
+
+      // 2) hero-title แบบ SplitText chars เหมือน CTA
+      introTl.to(
+        split ? split.chars : ".hero-title",
+        {
+          y: "0%",
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.03,
+        },
+        6.6
+      );
+
+      // 3) sub text โผล่ตามหลัง title
+      introTl.from(
+        ".hero-sub",
+        {
+          y: 12,
+          opacity: 0,
+          duration: 1,
+        },
+        "-=0.4"
+      );
+
+      // 4) CTA buttons เข้ามาซ้อนท้าย ๆ
+      introTl.from(
+        ".hero-cta",
+        {
+          y: 8,
+          opacity: 0,
+          stagger: 0.08,
+          duration: 0.6,
+        },
+        "-=0.5"
+      );
 
       /* ===== BLOCK REVEAL MENU ===== */
       const tl = gsap.timeline({
@@ -71,13 +111,9 @@ export default function Hero() {
         },
       });
 
-      // เปิด overlay menu container
       tl.set(".overlay-menu", { opacity: 1, pointerEvents: "auto" }, 0);
-
-      // รีเซ็ต menu item
       tl.set(".menu-item", { opacity: 0, y: 20 }, 0);
 
-      // block wipe
       tl.to(".block", {
         duration: 1,
         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
@@ -85,7 +121,6 @@ export default function Hero() {
         ease: "power3.inOut",
       });
 
-      // menu item โผล่ขึ้น
       tl.to(
         ".menu-item,.menu-title",
         {
@@ -115,26 +150,13 @@ export default function Hero() {
   };
 
   return (
-    <section
-      ref={root}
-      className="hero-section"
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "12vh 8vw",
-        background: "#050507",
-        overflow: "hidden",
-      }}
-    >
+    <section ref={root} className="hero-section">
       {/* ===== NAV BAR ===== */}
       <nav className="hero-nav">
         <div className="hero-logo">
           <img src={logo} alt="logo" />
         </div>
 
-        {/* ปุ่ม burger ใช้ GSAP toggle */}
         <button
           className="hero-burger"
           onClick={(e) => {
@@ -153,15 +175,7 @@ export default function Hero() {
       </div>
 
       {/* ===== Shader Scene Layer ===== */}
-      <div
-        className="hero-bg"
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
-      >
+      <div className="hero-bg">
         <BioVeinScene />
       </div>
 
@@ -169,23 +183,11 @@ export default function Hero() {
       <div className="hero-vignette" aria-hidden="true" />
 
       {/* ===== Content Layer ===== */}
-      <div
-        className="hero-content"
-        style={{
-          maxWidth: 1100,
-          position: "relative",
-          zIndex: 2,
-          textAlign: "right",
-          marginLeft: "auto", // ชิดขวา
-          paddingRight: "4vw",
-          marginTop: "10vh", // ดันลงมาจากขอบบน
-        }}
-      >
+      <div className="hero-content">
         <p className="hero-kicker">FUTURISTIC TECH</p>
 
         <h1 className="hero-title" data-text="Launch the Next-Gen Experience">
-          {/* ใช้ non-breaking hyphen กันคำแตกบรรทัด */}
-          {"Launch the Next\u2011Gen Experience"}
+          {"Launch the Next\u2011Gen Ex\u2011perience"}
         </h1>
 
         <p className="hero-sub">
@@ -203,6 +205,7 @@ export default function Hero() {
         <div className="menu-title">
           <p>[menu]</p>
         </div>
+
         <div className="menu-item">
           <div className="menu-item-year">
             <p>2023</p>
@@ -214,6 +217,7 @@ export default function Hero() {
             <a href="#">[explore]</a>
           </div>
         </div>
+
         <div className="menu-item">
           <div className="menu-item-year">
             <p>2022</p>
@@ -225,6 +229,7 @@ export default function Hero() {
             <a href="#">[explore]</a>
           </div>
         </div>
+
         <div className="menu-item">
           <div className="menu-item-year">
             <p>2021</p>
@@ -236,6 +241,7 @@ export default function Hero() {
             <a href="#">[explore]</a>
           </div>
         </div>
+
         <div className="menu-item">
           <div className="menu-item-year">
             <p>Learn More</p>

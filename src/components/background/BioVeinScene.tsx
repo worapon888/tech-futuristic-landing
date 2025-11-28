@@ -38,15 +38,9 @@ export default function BioVeinScene() {
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       onCreated={({ gl }) => {
-        gl.setClearColor(0x000000, 0); // โปร่งใสทับ hero ได้
+        gl.setClearColor(0x000000, 0); // โปร่งใส ทับ hero ได้
       }}
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-      }}
+      className="bio-vein-canvas"
     >
       <OrthographicCamera makeDefault position={[0, 0, 1]} zoom={1} />
       <BioVeinPlane />

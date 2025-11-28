@@ -102,6 +102,8 @@ export function useWorkSectionAnimation(
       1000
     );
     lettersCamera.position.z = 20;
+    lettersCamera.aspect = window.innerWidth / window.innerHeight;
+    lettersCamera.updateProjectionMatrix();
 
     const lettersRenderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -261,7 +263,10 @@ export function useWorkSectionAnimation(
       },
     });
 
-    updateTargetPositions(0);
+    requestAnimationFrame(() => {
+      updateTargetPositions(0);
+    });
+
     animate();
 
     const handleResize = () => {
